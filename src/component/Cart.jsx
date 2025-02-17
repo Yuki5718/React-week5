@@ -97,40 +97,42 @@ function Cart({
   return (
     <div>
       <h5 className="text-center fw-bold">購物車</h5>
-      {carts === undefined ? (<></>) : (carts.length < 1 ? (<p className="text-center text-primary fw-bold">Oops！購物車裡沒有東西～</p>) : (
-      <table className="table align-middle">
-        <thead>
-          <tr>
-            <th scope="col" className="w-25">產品圖片</th>
-            <th scope="col">產品名稱</th>
-            <th scope="col">單價</th>
-            <th scope="col" className="text-center">數量</th>
-            <th scope="col" className="text-end">小計</th>
-            <th className="text-end">{carts.length > 1 && (<button type="button" className="btn btn-warning" onClick={(e)=>handleUpdateCart(e , "deleteAll")}>全部刪除</button>)}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {carts.length !== 0 && carts.map(({id,qty,total,product})=>(
-            <tr key={id}>
-              <td>
-                <img src={product.imageUrl} className="img-fluid" style={{height:100}} alt={product.title} />
-              </td>
-              <td>{product.title}</td>
-              <td>${product.price}</td>
-              <td>
-                <div className="d-flex justify-content-between">
-                  <button className="btn btn-secondary py-0 px-1" onClick={(e)=>handleUpdateCart(e , "plusQty" , id , qty)}><i className="bi bi-plus" /></button>
-                    {qty}
-                  <button className="btn btn-secondary py-0 px-1" onClick={(e)=>handleUpdateCart(e , "minusQty" , id , qty)}><i className="bi bi-dash" /></button>
-                </div>
-              </td>
-              <td className="text-end">${total}</td>
-              <td className="text-end"><button type="button" className="btn btn-danger" onClick={(e)=>handleUpdateCart(e , "deleteItem" , id)}>刪除</button></td>
+      {carts !== undefined && (
+        carts.length < 1 ? (
+          <p className="text-center text-primary fw-bold">Oops！購物車裡沒有東西～</p>
+      ) : (
+        <table className="table align-middle">
+          <thead>
+            <tr>
+              <th scope="col" className="w-25">產品圖片</th>
+              <th scope="col">產品名稱</th>
+              <th scope="col">單價</th>
+              <th scope="col" className="text-center">數量</th>
+              <th scope="col" className="text-end">小計</th>
+              <th className="text-end">{carts.length > 1 && (<button type="button" className="btn btn-warning" onClick={(e)=>handleUpdateCart(e , "deleteAll")}>全部刪除</button>)}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>))}
-      
+          </thead>
+          <tbody>
+            {carts.length !== 0 && carts.map(({id,qty,total,product})=>(
+              <tr key={id}>
+                <td>
+                  <img src={product.imageUrl} className="img-fluid" style={{height:100}} alt={product.title} />
+                </td>
+                <td>{product.title}</td>
+                <td>${product.price}</td>
+                <td>
+                  <div className="d-flex justify-content-between">
+                    <button className="btn btn-secondary py-0 px-1" onClick={(e)=>handleUpdateCart(e , "plusQty" , id , qty)}><i className="bi bi-plus" /></button>
+                      {qty}
+                    <button className="btn btn-secondary py-0 px-1" onClick={(e)=>handleUpdateCart(e , "minusQty" , id , qty)}><i className="bi bi-dash" /></button>
+                  </div>
+                </td>
+                <td className="text-end">${total}</td>
+                <td className="text-end"><button type="button" className="btn btn-danger" onClick={(e)=>handleUpdateCart(e , "deleteItem" , id)}>刪除</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>))}
     </div>
   )
 }
