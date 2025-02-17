@@ -1,4 +1,8 @@
-function ProductsList({products,handleAddCart}) {
+function ProductsList({
+  products,
+  handleAddCart
+}) {
+  
   return (<>
     {products.map((product)=>(
       <div key={product.id} className="col-3">
