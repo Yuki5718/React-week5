@@ -2,7 +2,9 @@ function ProductsList({
   products,
   handleAddCart,
   setTempProduct,
-  setIsModalOpen
+  setIsModalOpen,
+  isCartLoading,
+  oderId
 }) {
   return (<>
     {products.map((product)=>(
@@ -13,12 +15,12 @@ function ProductsList({
             <h5 className="card-title fw-bold">{product.title}</h5>
             <p className="card-text">{product.content}</p>
             <div className="d-flex justify-content-between mt-auto">
-              <button className="btn btn-primary w-100 me-2"
+              <button className={`btn btn-primary w-100 me-2 ${isCartLoading && ("disabled")}`}
                 onClick={() => {
                   setTempProduct(product)
                   setIsModalOpen(true)
-                }}>查看細節</button>
-              <button className="btn btn-primary w-100" onClick={() => handleAddCart(product.id)}>點我下單</button>
+                }} disabled={oderId !== null}>查看細節</button>
+              <button className={`btn btn-primary w-100 ${isCartLoading && ("disabled")}`} onClick={() => handleAddCart(product.id)} disabled={oderId !== null}>點我下單</button>
             </div>
           </div>
         </div>
