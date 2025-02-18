@@ -1,14 +1,14 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import ReactLoading from 'react-loading';
+
 const { VITE_BASE_URL , VITE_API_PAHT } = import.meta.env
 
 function Cart({
   getCartData,
   cartData,
+  isCartLoading,
 }) {
-  useEffect(() => {
-    getCartData();
-  },[])
   
   const [ carts , setCarts ] = useState([])
   useEffect(()=>{
@@ -30,12 +30,7 @@ function Cart({
       default:
         break;
     }
-
-    if ( newQty < 1 ) {
-      console.log("不能更少了")
-      return
-    }
-
+    console.log(newQty)
     const data = {
       "data": {
         "product_id": itemId,
@@ -95,7 +90,19 @@ function Cart({
   }
 
   return (
-    <div>
+    <div className="position-relative">
+      {isCartLoading && (<div
+        className="d-flex justify-content-center align-items-center"
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "rgba(255,255,255,0.3)",
+          zIndex: 999,
+        }}
+      >
+        <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
+      </div>)}
+
       <h5 className="text-center fw-bold">購物車</h5>
       {carts !== undefined && (
         carts.length < 1 ? (
@@ -109,11 +116,11 @@ function Cart({
               <th scope="col">單價</th>
               <th scope="col" className="text-center">數量</th>
               <th scope="col" className="text-end">小計</th>
-              <th className="text-end">{carts.length > 1 && (<button type="button" className="btn btn-warning" onClick={(e)=>handleUpdateCart(e , "deleteAll")}>全部刪除</button>)}</th>
+              <th className="text-end">{carts.length > 1 && (<button type="button" className={`btn btn-warning ${isCartLoading && ("disabled")}`} onClick={(e)=>handleUpdateCart(e , "deleteAll")}>全部刪除</button>)}</th>
             </tr>
           </thead>
           <tbody>
-            {carts.length !== 0 && carts.map(({id,qty,total,product})=>(
+            {carts.map(({id,qty,total,product})=>(
               <tr key={id}>
                 <td>
                   <img src={product.imageUrl} className="img-fluid" style={{height:100}} alt={product.title} />
@@ -122,13 +129,15 @@ function Cart({
                 <td>${product.price}</td>
                 <td>
                   <div className="d-flex justify-content-between">
-                    <button className="btn btn-secondary py-0 px-1" onClick={(e)=>handleUpdateCart(e , "plusQty" , id , qty)}><i className="bi bi-plus" /></button>
+                    <button className={`btn btn-secondary py-0 px-1 ${(isCartLoading || (qty === 1)) && ("disabled")}`} onClick={(e)=>handleUpdateCart(e , "minusQty" , id , qty)}><i className="bi bi-dash" /></button>
                       {qty}
-                    <button className="btn btn-secondary py-0 px-1" onClick={(e)=>handleUpdateCart(e , "minusQty" , id , qty)}><i className="bi bi-dash" /></button>
+                    <button className={`btn btn-secondary py-0 px-1 ${isCartLoading && ("disabled")}`} onClick={(e)=>handleUpdateCart(e , "plusQty" , id , qty)}><i className="bi bi-plus" /></button>
                   </div>
                 </td>
                 <td className="text-end">${total}</td>
-                <td className="text-end"><button type="button" className="btn btn-danger" onClick={(e)=>handleUpdateCart(e , "deleteItem" , id)}>刪除</button></td>
+                <td className="text-end">
+                  <button type="button" className={`btn btn-danger ${isCartLoading && ("disabled")}`} onClick={(e)=>handleUpdateCart(e , "deleteItem" , id)} >刪除</button>
+                </td>
               </tr>
             ))}
           </tbody>
