@@ -6,7 +6,8 @@ function ProductModal({
   isModalOpen,
   setIsModalOpen,
   addCart,
-  getCartData
+  getCartData,
+  isCartLoading
 }) {
   // Modal建立
   const productModalRef = useRef(null)
@@ -48,8 +49,12 @@ function ProductModal({
 
   // 總價(小計)
   const [ totalPrice , setTotalPrice ] = useState(0)
+
   // 取得下拉選單Ref
-  const selectQtyRef = useRef(null)
+  const selectQtyRef = useRef(0)
+  //ref.current的初始值，可以是任一類型的值，在首次渲染後會被忽略。
+  // 不使用null是因為首次渲染時會報錯，會導致111行 isNaN(selectQtyRef.current.value) 產生錯誤
+
   // 處理計算總價(小計)
   const handleTotalPriceChange = () => {
     const newTotalPrice = selectQtyRef.current.value * modalData.price
@@ -102,8 +107,11 @@ function ProductModal({
                     <p className="fs-3 mb-0">${totalPrice}</p>
                   </div>
                   <div className="mt-auto text-end">
-                    <button type="button" className="btn btn-primary me-2" onClick={()=>{handleAddCart(modalData.id , selectQtyRef.current.value)}}>加入購物車</button>
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleModalClose}>取消</button>
+                    <button type="button" 
+                      className={`btn btn-primary me-2 ${( isCartLoading || isNaN(selectQtyRef.current.value) ) && ("disabled")}`}
+                      onClick={()=>{handleAddCart(modalData.id , selectQtyRef.current.value)}}
+                    > 加入購物車 </button>
+                    <button type="button" className={`btn btn-secondary ${isCartLoading && ("disabled")}`} data-dismiss="modal" onClick={handleModalClose}>取消</button>
                   </div>
                 </div>
               </div>
