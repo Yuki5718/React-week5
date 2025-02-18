@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+
 import Cart from './component/Cart';
 import ProductsList from './component/ProductsList';
 import OderForm from './component/OderForm';
+import ProductModal from './component/ProductModal';
 
 const { VITE_BASE_URL , VITE_API_PAHT } = import.meta.env
 
@@ -20,7 +22,7 @@ function App() {
 
   // 取得產品詳細資料
   const [ tempProduct , setTempProduct ] = useState({})
-
+  const [ isModalOpen , setIsModalOpen ] = useState(false)
   
   // 取得購物車資料
   const [ cartData , setCartData ] = useState([])
@@ -35,11 +37,11 @@ function App() {
   }
   
   // 加入購物車
-  const addCart = async(id) => {
+  const addCart = async(id, qty=1 ) => {
     const data = { 
       data : {
         "product_id": id,
-        "qty": 1
+        "qty": Number(qty)
       }
     }
     try {
@@ -49,8 +51,7 @@ function App() {
     }
   }
 
-  const handleAddCart = async(e , id) => {
-    e.preventDefault()
+  const handleAddCart = async(id) => {
     await addCart(id)
     getCartData()
   }
@@ -71,9 +72,17 @@ function App() {
                   <ProductsList 
                     products={products}
                     handleAddCart={handleAddCart}
+                    setTempProduct={setTempProduct}
+                    setIsModalOpen={setIsModalOpen}
                   />
                 </div>
-                
+                <ProductModal
+                  tempProduct={tempProduct}
+                  isModalOpen={isModalOpen}
+                  setIsModalOpen={setIsModalOpen}
+                  addCart={addCart}
+                  getCartData={getCartData}
+                />
               </div>
               <div className="col-4">
                 <Cart 
