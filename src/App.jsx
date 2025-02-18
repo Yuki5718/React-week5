@@ -9,14 +9,22 @@ import ProductModal from './component/ProductModal';
 const { VITE_BASE_URL , VITE_API_PAHT } = import.meta.env
 
 function App() {
+  // 全螢幕Loading
+  const [ isScreenLoading , setIsScreenLoading ] = useState(false)
+  // 按鈕顯示Loading
+  const [ isBtnLoading , setIsBtnLoading ] = useState(false)
+
   // 取得產品資料
   const [ products , setProducts ] = useState([])
   const getProducts = async() => {
+    setIsScreenLoading(true)
     try {
       const res = await axios.get(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/products/all`)
       setProducts(res.data.products)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsScreenLoading(false)
     }
   }
 
@@ -33,7 +41,7 @@ function App() {
       setCartData(cartData)
     } catch (error) {
       console.log(error)
-    }
+    } 
   }
   
   // 加入購物車
@@ -55,6 +63,7 @@ function App() {
     await addCart(id)
     getCartData()
   }
+  // 加入購物車
 
   // 網頁初始化 init
   useEffect(()=>{
@@ -63,7 +72,7 @@ function App() {
 
   return (
     <>
-      { products.length === 0 ? (<></>) : (
+      { products.length !== 0 && (
         <>
           <div className="container mw-100 p-5 mt-5">
             <div className="row">
@@ -99,6 +108,18 @@ function App() {
           </div>
         </>
       )}
+      
+      { isScreenLoading && (<div
+        className="d-flex justify-content-center align-items-center"
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(255,255,255,0.3)",
+          zIndex: 999,
+        }}
+      >
+        <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
+      </div>)}
     </>
   )
 }
