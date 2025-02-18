@@ -104,12 +104,8 @@ function OderForm({
               message: "*必填欄位"
             },
             minLength: {
-              value: 8,
+              value: /^(0[2-8]\d{7}|09\d{8})$/,
               message: "電話不得少於8碼"
-            },
-            maxLength: {
-              value: 12,
-              message: "電話不得多於12碼"
             },
           })} />
           {errors.tel && (<div className="invalid-feedback">{errors?.tel?.message}</div>)}
@@ -124,7 +120,7 @@ function OderForm({
             message: "*必填欄位"
           },
           pattern: {
-            value: /^\S+@\S+$/i,
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             message: "Email 格式錯誤"
           }
         })} />
