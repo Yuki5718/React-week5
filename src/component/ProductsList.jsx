@@ -1,8 +1,9 @@
 function ProductsList({
   products,
-  handleAddCart
+  handleAddCart,
+  setTempProduct,
+  setIsModalOpen
 }) {
-  
   return (<>
     {products.map((product)=>(
       <div key={product.id} className="col-3">
@@ -12,14 +13,18 @@ function ProductsList({
             <h5 className="card-title fw-bold">{product.title}</h5>
             <p className="card-text">{product.content}</p>
             <div className="d-flex justify-content-between mt-auto">
-              <a href="#" className="btn btn-primary w-100 me-2">查看細節</a>
-              <a href="#" className="btn btn-primary w-100" onClick={(e)=>handleAddCart(e , product.id)}>點我下單</a>
+              <button className="btn btn-primary w-100 me-2"
+                onClick={() => {
+                  setTempProduct(product)
+                  setIsModalOpen(true)
+                }}>查看細節</button>
+              <button className="btn btn-primary w-100" onClick={() => handleAddCart(product.id)}>點我下單</button>
             </div>
           </div>
         </div>
       </div>
-    ))}</>
-  )
+    ))}
+  </>)
 }
 
 export default ProductsList
