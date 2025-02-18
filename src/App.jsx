@@ -12,7 +12,9 @@ function App() {
   // 全螢幕Loading
   const [ isScreenLoading , setIsScreenLoading ] = useState(false)
   // 按鈕顯示Loading
-  const [ isBtnLoading , setIsBtnLoading ] = useState(false)
+  const [ isCartLoading , setIsCartLoading ] = useState(false)
+  // oderId狀態
+  const [ oderId , setOderId ] = useState(null)
 
   // 取得產品資料
   const [ products , setProducts ] = useState([])
@@ -35,17 +37,21 @@ function App() {
   // 取得購物車資料
   const [ cartData , setCartData ] = useState([])
   const getCartData = async() => {
+    setIsCartLoading(true)
     try {
       const res = await axios.get(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/cart`)
       const cartData = res.data.data
       setCartData(cartData)
     } catch (error) {
       console.log(error)
-    } 
+    } finally {
+      setIsCartLoading(false)
+    }
   }
   
   // 加入購物車
   const addCart = async(id, qty=1 ) => {
+    setIsCartLoading(true)
     const data = { 
       data : {
         "product_id": id,
@@ -56,6 +62,8 @@ function App() {
       await axios.post(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/cart`, data)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsCartLoading(false)
     }
   }
 
@@ -67,48 +75,57 @@ function App() {
 
   // 網頁初始化 init
   useEffect(()=>{
-    getProducts();
+    getProducts()
+    getCartData()
   },[])
 
   return (
     <>
       { products.length !== 0 && (
-        <>
-          <div className="container mw-100 p-5 mt-5">
-            <div className="row">
-              <div className="col-8">
-                <div className="row g-3">
-                  <ProductsList 
-                    products={products}
-                    handleAddCart={handleAddCart}
-                    setTempProduct={setTempProduct}
-                    setIsModalOpen={setIsModalOpen}
-                  />
-                </div>
-                <ProductModal
-                  tempProduct={tempProduct}
-                  isModalOpen={isModalOpen}
+        <div className="container mw-100 p-5 mt-5">
+          <div className="row">
+            <div className="col-8">
+              <div className="row g-3">
+                <ProductsList 
+                  products={products}
+                  handleAddCart={handleAddCart}
+                  setTempProduct={setTempProduct}
                   setIsModalOpen={setIsModalOpen}
-                  addCart={addCart}
-                  getCartData={getCartData}
+                  isCartLoading={isCartLoading}
+                  oderId={oderId}
                 />
               </div>
-              <div className="col-4">
-                <Cart 
-                  getCartData={getCartData}
+              <ProductModal
+                tempProduct={tempProduct}
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                addCart={addCart}
+                getCartData={getCartData}
+                isCartLoading={isCartLoading}
+              />
+            </div>
+            <div className="col-4">
+              <Cart 
+                cartData={cartData}
+                getCartData={getCartData}
+                isCartLoading={isCartLoading}
+              />
+              <hr />
+              <div>
+                <h5 className="text-center fw-bold">填寫表單</h5>
+                <OderForm 
                   cartData={cartData}
+                  getCartData={getCartData}
+                  isCartLoading={isCartLoading}
+                  oderId={oderId}
+                  setOderId={setOderId} 
                 />
-                <hr />
-                <div>
-                  <h5 className="text-center fw-bold">填寫表單</h5>
-                  <OderForm />
-                </div>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
-      
+
       { isScreenLoading && (<div
         className="d-flex justify-content-center align-items-center"
         style={{
