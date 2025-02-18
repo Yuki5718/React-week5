@@ -24,13 +24,13 @@ function OderForm({
     mode: "onTouched"
   })
 
-  const watchForm = useWatch({
-    control
-  })
+  // const watchForm = useWatch({
+  //   control
+  // })
 
-  useEffect(()=> {
-    console.log(watchForm)
-  },[watchForm])
+  // useEffect(()=> {
+  //   console.log(watchForm)
+  // },[watchForm])
 
   const defaultOderData = {
     "data": {
